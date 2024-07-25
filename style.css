@@ -49,3 +49,17 @@ button {
     flex-wrap: wrap;
     gap: 10px;
 }
+
+#subBtn {
+    background-color: azure;
+}
+
+/* .top {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+}
+
+.col_main {
+    width: 60%;
+} */

@@ -3,13 +3,14 @@ let taskIn = document.querySelector("#taskIn").value;
 let okBtn = document.querySelector("#subBtn");
 let suppr = document.querySelectorAll(".del");
 let dateAff = document.querySelector("#date");
+let dateBut = document.querySelector("#dateButIn").value;
 
 let ref = 3;
 let date = new Date();
 let year = date.getFullYear();
 let month = date.getMonth();
 let day = date.getDate();
-let now = `${day} / ${month} / ${year}`
+let now = `${year}-${month}-${day}`
 
 
 let data = [];
@@ -19,7 +20,6 @@ function refresh() {
     console.log(data);
     document.querySelectorAll(".task").forEach(x => x.remove());
 
-    
     dateAff.textContent =  `${now}`
 
     data.map((ele) => {
@@ -29,13 +29,20 @@ function refresh() {
         ele.state === 0 ? task.style.backgroundColor = "rgb(239, 241, 90)" : task.style.backgroundColor = "rgb(95, 241, 90)";
         task.className = `${data.indexOf(ele)} task`;
         task.innerHTML = `
+        <div class="top">
+        <div class="col_main">
         <div class="line">
             <h3>Nom : </h3><p class="${data.indexOf(ele)} mod name">${ele.name}<p>
         </div>
         <div class="line">
             <h3>Description : </h3> <p class="${data.indexOf(ele)} mod content">${ele.content}</p>
         </div>
-        <div class="line"><h5>Date de création : </h5><p class="${data.indexOf(ele)} mod date">${ele.date}</p></div>
+        </div>
+        <div class="col_dates">
+        <div class="line"><p>Date de création : </p><p class="${data.indexOf(ele)} mod date dateCreat">${ele.date}</p></div>
+        <div class="line"><p>Date butoire : </p><p class="${data.indexOf(ele)} mod dateBut date">${ele.dateBut}</p></div>
+        </div>
+        </div>
         <hr>
         <div class="btns" id="b${data.indexOf(ele)}">
             <button id="${data.indexOf(ele)}" class="del btn" >Supprimer</button>
@@ -61,7 +68,10 @@ function refresh() {
         console.log("change");
         changeIt(x.className[0]);
     }))
-    localStorage.setItem("DataFred", data)
+    localStorage.setItem("DataFred", data);
+    document.querySelector("#taskName").value = "";
+    document.querySelector("#taskIn").value = "";
+    document.querySelector("#dateButIn").value = "";
 }
 
 refresh();
@@ -70,6 +80,7 @@ function addTask() {
     console.log("---AddTask---");
     taskName = document.querySelector("#taskName").value;
     taskIn = document.querySelector("#taskIn").value;
+    dateBut = document.querySelector("#dateButIn").value;
     if(taskName === "" || taskIn === "") {
         alert("Veuillez saisir un Nom ET une Description")
     } else {
@@ -79,6 +90,7 @@ function addTask() {
         newT.ref = ref;
         newT.state = 0;
         newT.date = now;
+        newT.dateBut = dateBut;
         data.push(newT);
         ref++;
         refresh()
@@ -95,13 +107,15 @@ function changeIt(wich) {
     console.log(mod);
     Array.from(mod).map((x) => {
         console.log(x)
+        console.log(x.classList)
         let inp = document.createElement("input");
         inp.classList = `${x.classList}`
         let nam = x.classList[2];
         inp.placeholder = data[x.className[0]][`${nam}`];
-        console.log("-------------------------------")
-        console.log(nam)
-        console.log(data[x.className[0]][`${nam}`])
+        if(x.classList.contains("date")){
+            inp.type = "date";
+            inp.value = data[x.className[0]][`${nam}`];
+        }
         x.parentNode.appendChild(inp);
         x.remove()
     }
@@ -130,7 +144,6 @@ function changeIt(wich) {
         Array.from(mod).map((x) => {
         console.log(x.value)
         if(x.value != "") {
-            //-----------------------------------------------let nam = x.classList[2];
             let nam = x.classList[2];
             console.log("SAVE " + x.value)
             data[wich][`${nam}`] = x.value;
